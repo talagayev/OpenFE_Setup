@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block title %}Display Molecules{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h2>Select Molecules</h2>
+    <!-- Placeholder for mols2grid display -->
+    <div id="mols2grid-display"></div>
+    
+    <h3>Selected Molecules</h3>
+    <ul id="selected-molecules-list"></ul>
+
+    <form method="post" action="{{ url_for('handle_selected_molecules') }}" id="selected-molecules-form">
+        <input type="hidden" name="selected_molecule_ids" id="selected-molecule-ids" value="">
+        <button type="submit" class="btn light-blue-btn">Submit Selected Molecules</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Function to initialize mols2grid and handle selections
+    function initializeMols2Grid() {
+        mols2grid.show({
+            // Configuration for mols2grid
+            target: '#mols2grid-display',
+            selection: 'checkbox', // Enable selection with checkboxes
+            // Other mols2grid options...
+        });
+
+        // Event handler for capturing selected molecules
+        $('#mols2grid-display').on('change', 'input[type="checkbox"]', function() {
+            let selectedMoleculeIds = [];
+            let selectedMoleculeNames = [];
+            $('#mols2grid-display input[type="checkbox"]:checked').each(function() {
+                selectedMoleculeIds.push($(this).data('mol-id'));
+                selectedMoleculeNames.push($(this).data('mol-name'));
+            });
+            $('#selected-molecule-ids').val(selectedMoleculeIds.join(','));
+            updateSelectedMoleculesList(selectedMoleculeNames);
+            // Update the Selection Register
+            updateSelectionRegister(selectedMoleculeIds.join(','));
+        });
+    }
+
+    // Function to update the selected molecules list display
+    function updateSelectedMoleculesList(selectedMoleculeNames) {
+        let selectedMoleculesList = $('#selected-molecules-list');
+        selectedMoleculesList.empty();
+        selectedMoleculeNames.forEach(function(name) {
+            selectedMoleculesList.append('<li>' + name + '</li>');
+        });
+    }
+
+    // Function to update the Selection Register with the selected molecule IDs
+    function updateSelectionRegister(selectedMoleculeIds) {
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for('update_selection_register') }}",
+            data: {selected_molecule_ids: selectedMoleculeIds},
+            success: function(response) {
+                console.log("Selection Register updated successfully.");
+            },
+            error: function(xhr, status, error) {
+                console.error("Error updating Selection Register:", error);
+            }
+        });
+    }
+
+    // Initialize mols2grid on page load
+    $(document).ready(function() {
+        initializeMols2Grid();
+    });
+</script>
+{% endblock %}

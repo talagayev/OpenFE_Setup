@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Molecule Display</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+    <style>
+        body {
+            background-color: #f0f8ff; /* Light blue background color */
+        }
+
+        #progressParent {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            margin-top: -75px;
+            margin-left: -125px
+        }
+        #overlay {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0px;
+            left: 0px;
+            background-color: rgba(255,255,255);
+            visibility:hidden;
+        }
+        #progressMessage {
+            width: 100%;
+            position: fixed;
+            top: 40%;
+            margin-top: 90px;
+            text-align: center
+        }
+        .light-blue-btn {
+            background-color: #7ec8e3; /* Light blue color */
+            color: #fff; /* White text color */
+            border: none; /* Remove border */
+        }
+        .light-blue-btn:hover,
+        .light-blue-btn:focus {
+            background-color: #5fa8d3; /* Darker shade of blue on hover/focus */
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <noscript>
+            <div style='color:red'>
+                <h1>Javascript Disabled</h1>
+                This application requires Javascript to operate.  Please enable Javascript in your browser, then reload this page.
+            </div>
+        </noscript>
+        <form method="get" action="{{ url_for('headerControls') }}">
+            <div>
+                <img src="{{ url_for('static', filename='FE_Icon.svg') }}" width='200' style='margin-left: 20%'/>
+                <span style="float:right; margin-top:30px">
+                {% block startover %}
+                    <input type="submit" class="btn light-blue-btn" name="startOver" value="Start Over"/>
+                {% endblock %}
+                    <input type="submit" class="btn light-blue-btn" name="quit" value="Quit"/>
+                </span>
+            </div>
+        </form>
+        {% block body %}{% endblock %}
+    </div>
+    <div id="overlay">
+        <div id="progressParent"></div>
+        <div id="progressMessage">
+            <div style="font-size:xx-large">Processing</div>
+            This may take some time.
+        </div>
+    </div>
+  <div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2>Molecules in SDF File</h2>
+        </div>
+    </div>
+    <div class="row">
+      {{ image|safe }}
+    </div>
+    <div class="row text-center">
+        <form method="get" action="{{ url_for('configureFiles') }}">
+            <input type="submit" class="btn light-blue-btn" value="Continue"/>
+        </form>
+    </div>
+  </div>
+</body>
+</html>

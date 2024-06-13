@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Molecule Display</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+    <style>
+        body {
+            background-color: #f0f8ff; /* Light blue background color */
+        }
+        .light-blue-btn {
+            background-color: #7ec8e3; /* Light blue color */
+            color: #fff; /* White text color */
+            border: none; /* Remove border */
+        }
+        .light-blue-btn:hover,
+        .light-blue-btn:focus {
+            background-color: #5fa8d3; /* Darker shade of blue on hover/focus */
+        }
+        /* Adjust width of dropdown menus */
+        .form-control {
+            width: 300px; /* Adjust the width as needed */
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <noscript>
+            <div style='color:red'>
+                <h1>Javascript Disabled</h1>
+                This application requires Javascript to operate.  Please enable Javascript in your browser, then reload this page.
+            </div>
+        </noscript>
+        <form method="get" action="{{ url_for('headerControls') }}">
+            <div>
+                <img src="{{ url_for('static', filename='FE_Icon.svg') }}" width='200' style='margin-left: 20%'/>
+                <span style="float:right; margin-top:30px">
+                    {% block startover %}
+                        <input type="submit" class="btn light-blue-btn" name="startOver" value="Start Over"/>
+                    {% endblock %}
+                    <input type="submit" class="btn light-blue-btn" name="quit" value="Quit"/>
+                </span>
+            </div>
+        </form>
+        {% block body %}{% endblock %}
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h2>Molecules in SDF File</h2>
+            </div>
+        </div>
+        <div class="row">
+            {{ image|safe }}
+        </div>
+        <div class="row text-center">
+            <form method="post" action="{{ url_for('mapping_page') }}" class="form-horizontal">
+                <div class="form-group">
+                    <label for="ligand1" class="control-label col-md-2">Select Ligand 1</label>
+                    <div class="col-md-10">
+                        <select name="ligand1" id="ligand1" class="form-control" onchange="updateSecondDropdown(this)">
+                            <option value="" selected disabled>Select a ligand</option>
+                            {% for ligand in ligand_names %}
+                                <option value="{{ loop.index0 }}">{{ ligand }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ligand2" class="control-label col-md-2">Select Ligand 2</label>
+                    <div class="col-md-10">
+                        <select name="ligand2" id="ligand2" class="form-control">
+                            <option value="" selected disabled>Select a ligand</option>
+                            {% for ligand in ligand_names %}
+                                <option value="{{ loop.index0 }}">{{ ligand }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <input type="submit" class="btn light-blue-btn" value="Continue"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    function updateDropdowns(selectedDropdown) {
+        var selectedIndex = selectedDropdown.selectedIndex;
+        var options1 = document.getElementById('ligand1').options;
+        var options2 = document.getElementById('ligand2').options;
+
+        // Enable all options in both dropdowns
+        for (var i = 0; i < options1.length; i++) {
+            options1[i].disabled = false;
+        }
+        for (var j = 0; j < options2.length; j++) {
+            options2[j].disabled = false;
+        }
+
+        // Disable the selected option in the other dropdown
+        if (selectedDropdown.id === 'ligand1') {
+            options2[selectedIndex].disabled = true;
+        } else if (selectedDropdown.id === 'ligand2') {
+            options1[selectedIndex].disabled = true;
+        }
+    }
+
+    // Bind the function to the onchange event of both dropdowns
+    document.getElementById('ligand1').onchange = function() {
+        updateDropdowns(this);
+    };
+    document.getElementById('ligand2').onchange = function() {
+        updateDropdowns(this);
+    };
+</script>

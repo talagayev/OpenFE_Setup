@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% macro fileinput(id) %}
+    <div class="input-group">
+        <label class="btn btn-default btn-file input-group-addon">
+            <span title="Select File" style="font-weight: 700;">Browse... </span>
+            <input type="file" name="{{ id }}" id="{{ id }}" style="display: none" onchange="optionChanged()"/>
+        </label>
+        <span id="{{ id }}_label" class="form-control"></span>
+    </div>
+{% endmacro %}
+
+{% block title %}Select Input Files{% endblock %}
+{% block body %}
+Select the pdb input file and options for how to model it.
+<p/>
+
+<form method="post" enctype="multipart/form-data" action="{{ url_for('configureFiles') }}" class="form-horizontal">
+    <div class="form-group">
+        <label for="filename" class="control-label col-md-2">PDB File</label>
+        <div class="col-md-10">{{ fileinput('file') }}</div>
+    </div>
+    <p>
+        Optional: Add ligand SDF file to the MD simulation (Default: No ligand)
+    </p>
+    <div class="form-group">
+        <label for="filename" class="control-label col-md-2">Ligand File</label>
+        <div class="col-md-10" title="The supported formats are SDF, MOL, and MOL2">
+            {{ fileinput('sdfFile') }}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2">Prepare PDB</label>
+        <div class="col-md-10">
+            <label class="radio-inline">
+                <input type="radio" name="preparePDB" value="yes" onclick="optionChanged()"> Yes
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="preparePDB" value="no" onclick="optionChanged()"> No
+            </label>
+        </div>
+    </div>
+    <br/>
+    <input type="submit" value="Continue" id="continue" class="btn" disabled="true"/>
+</form>
+<script>
+    function optionChanged() {
+        // Update UI elements.
+        files = document.getElementById("file").files;
+        sdfFile = document.getElementById("sdfFile").files;
+        preparePDB = document.querySelector('input[name="preparePDB"]:checked').value;
+        document.getElementById("file_label").textContent = (files.length == 0 ? "" : files[0].name);
+        document.getElementById("sdfFile_label").textContent = (sdfFile.length == 0 ? "" : sdfFile[0].name);
+        document.getElementById('continue').disabled = !document.getElementById("file").value;
+    }
+    optionChanged()
+</script>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %}Select Input File Type{% endblock %}
+{% block startover %}{% endblock %}
+{% block body %}
+<h2>Welcome to OpenMMDL Configuration File Generator!</h2>
+What kind of Simulation would you like to perform?
+<p/>
+<form method="get" action="{{ url_for('select_simulation') }}">
+    <label class="control-label"><input type="radio" name="type" value="fe" checked/> FE</label>
+    <p style="margin-left:50px">A free energy calculation simulation</p>
+    <label class="control-label"><input type="radio" name="type" value="md"/> MD</label>
+    <p style="margin-left:50px">Standard protein-ligand MD simulation</p>
+    <input type="submit" value="Continue" class="btn"/>
+</form>
+
+{% endblock %}

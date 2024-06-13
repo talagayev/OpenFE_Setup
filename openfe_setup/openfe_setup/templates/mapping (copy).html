@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %}Ligand Mapping{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2>Ligand Mapping</h2>
+        </div>
+    </div>
+    <form method="post" action="{{ url_for('mapping_page') }}" class="form-horizontal">
+        <div class="form-group">
+            <label for="ligand1" class="control-label col-md-2">Select Ligand 1</label>
+            <div class="col-md-10">
+                <select name="ligand1" id="ligand1" class="form-control">
+                    {% for ligand in ligand_mols %}
+                        <option value="{{ loop.index0 }}">{{ ligand.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="ligand2" class="control-label col-md-2">Select Ligand 2</label>
+            <div class="col-md-10">
+                <select name="ligand2" id="ligand2" class="form-control">
+                    {% for ligand in ligand_mols %}
+                        <option value="{{ loop.index0 }}">{{ ligand.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn light-blue-btn">Map Ligands</button>
+        </div>
+    </form>
+    {% if lomap_mapping %}
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Mapping Result:</h3>
+            <pre>{{ lomap_mapping }}</pre>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
